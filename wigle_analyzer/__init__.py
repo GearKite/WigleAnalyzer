@@ -1,1 +1,1 @@
-from wigle_analyzer.main import main
+from wigle_analyzer.__main__ import main
