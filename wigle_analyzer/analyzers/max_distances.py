@@ -1,6 +1,8 @@
+import logging
 import numpy as np
 from prettytable import PrettyTable
 from scipy.spatial.distance import pdist
+from operator import itemgetter
 
 from wigle_analyzer.types import Analyzer
 
@@ -25,6 +27,7 @@ class MaxDistancesAnalyzer(Analyzer):
         self.locations[mac].append(point)
 
     def write(self, _output_file: str):
+        logging.info('"Writing" table')
         distances = {}
 
         for mac, points in self.locations.items():
@@ -37,9 +40,7 @@ class MaxDistancesAnalyzer(Analyzer):
 
             distances[mac] = max_distance
 
-        distances = {
-            k: v for k, v in sorted(distances.items(), key=lambda item: item[1])
-        }
+        sorted_distances = sorted(distances.items(), key=itemgetter(1))
 
         table = PrettyTable(["MAC", "Num. Points", "Max distance"])
 
@@ -50,7 +51,7 @@ class MaxDistancesAnalyzer(Analyzer):
                     len(self.locations[mac]),
                     distance,
                 ]
-                for mac, distance in distances.items()
+                for mac, distance in sorted_distances
             ]
         )
 
