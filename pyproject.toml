@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "wigle-analyzer"
+version = "0.1.0"
+description = ""
+authors = ["GearKite <emgh@em.id.lv>"]
+license = "AGPL-v3-or-later"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+geojson = "^3.1.0"
+coloredlogs = "^15.0.1"
+numpy = "^2.0.0"
+scipy = "^1.14.0"
+prettytable = "^3.10.2"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+isort = "^5.13.2"
+pylint = "^3.2.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+wigle_analyzer = "wigle_analyzer:main"
