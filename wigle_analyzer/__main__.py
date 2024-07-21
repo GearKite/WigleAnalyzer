@@ -2,14 +2,15 @@ import argparse
 import logging
 
 import coloredlogs
+import line_profiler
 
-from wigle_analyzer.analyzers.max_distances import MaxDistancesAnalyzer
 from wigle_analyzer.analyzers.geojson_map import GeoJsonMap
+from wigle_analyzer.analyzers.max_distances import MaxDistancesAnalyzer
 from wigle_analyzer.analyzers.point_maps import PointMapsAnalyzer
+from wigle_analyzer.filter import EntryFilter
 from wigle_analyzer.parsers.wigle_csv import CSVParser
 from wigle_analyzer.parsers.wigle_db import DBParser
 from wigle_analyzer.types import Analyzer, BadInputFormat, Parser
-from wigle_analyzer.filter import EntryFilter
 
 coloredlogs.install(level=logging.INFO)
 
@@ -21,6 +22,7 @@ ANALYZERS = {
 PARSERS = {"csv": CSVParser, "sqlite": DBParser}
 
 
+@line_profiler.profile
 def main():
     parser = argparse.ArgumentParser(
         prog="Wigle Analyzer",
@@ -50,6 +52,7 @@ def main():
     run(args=args)
 
 
+@line_profiler.profile
 def run(args):
     # Create the analyzer
     analyzer = get_analyzer(args)()

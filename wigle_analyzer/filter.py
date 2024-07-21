@@ -1,6 +1,8 @@
 import logging
 from typing import Type
 
+import line_profiler
+
 from wigle_analyzer.types import Analyzer
 
 
@@ -18,6 +20,7 @@ class EntryFilter(Analyzer):
 
         logging.debug("Filtering bad entries = %s", filter_bad)
 
+    @line_profiler.profile
     def callback_filter(
         self,
         mac: str,

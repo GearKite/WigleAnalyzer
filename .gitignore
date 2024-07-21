@@ -173,6 +173,10 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
+# line-profiler
+profile_output*.txt
+profile_output.lprof
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json

@@ -1,6 +1,7 @@
 import logging
 
 import geojson
+import line_profiler
 
 from wigle_analyzer.types import Analyzer
 
@@ -9,6 +10,7 @@ class PointMapsAnalyzer(Analyzer):
     def __init__(self) -> None:
         self.features = {}
 
+    @line_profiler.profile
     def callback_for_each(
         self,
         mac: str,
@@ -28,6 +30,7 @@ class PointMapsAnalyzer(Analyzer):
 
         self.features[mac].append(node)
 
+    @line_profiler.profile
     def write(self, output_dir: str):
         logging.info("Writing GeoJson feature collection")
 

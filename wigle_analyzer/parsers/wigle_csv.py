@@ -4,12 +4,15 @@ import csv
 import logging
 from typing import Type
 
+import line_profiler
+
 from wigle_analyzer.types import Analyzer, Parser
 
 
 class CSVParser(Parser):
     """A Wigle csv export parser"""
 
+    @line_profiler.profile
     def __init__(
         self,
         file_name: str,
@@ -25,8 +28,6 @@ class CSVParser(Parser):
             next(reader)
 
             for row in reader:
-                logging.debug("Reading row: %s", row)
-
                 mac = row[0]
 
                 if filter_mac is not None and mac != filter_mac:

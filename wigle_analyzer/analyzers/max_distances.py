@@ -1,8 +1,10 @@
 import logging
+from operator import itemgetter
+
+import line_profiler
 import numpy as np
 from prettytable import PrettyTable
 from scipy.spatial.distance import pdist
-from operator import itemgetter
 
 from wigle_analyzer.types import Analyzer
 
@@ -11,6 +13,7 @@ class MaxDistancesAnalyzer(Analyzer):
     def __init__(self) -> None:
         self.locations = {}
 
+    @line_profiler.profile
     def callback_for_each(
         self,
         mac: str,
@@ -26,6 +29,7 @@ class MaxDistancesAnalyzer(Analyzer):
         point = (float(lat), float(lon))
         self.locations[mac].append(point)
 
+    @line_profiler.profile
     def write(self, _output_file: str):
         logging.info('"Writing" table')
         distances = {}

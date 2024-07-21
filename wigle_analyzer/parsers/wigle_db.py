@@ -5,12 +5,15 @@ import logging
 import sqlite3
 from typing import Type
 
+import line_profiler
+
 from wigle_analyzer.types import Analyzer, Parser
 
 
 class DBParser(Parser):
     """A Wigle database export parser"""
 
+    @line_profiler.profile
     def __init__(
         self,
         file_name: str,
@@ -32,8 +35,6 @@ class DBParser(Parser):
         locations = res.fetchall()
 
         for row in locations:
-            logging.debug("Reading row: %s", row)
-
             mac = row[0]
             time = row[1]
             lat = row[2]
