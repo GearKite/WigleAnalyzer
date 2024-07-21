@@ -29,7 +29,8 @@ class CSVParser(Parser):
 
                 mac = row[0]
 
-                if mac != filter_mac:
+                if filter_mac is not None and mac != filter_mac:
+                    logging.debug("Row filtered out by MAC")
                     continue
 
                 time = row[3]
