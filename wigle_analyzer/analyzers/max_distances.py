@@ -14,6 +14,7 @@ from wigle_analyzer.types import Analyzer
 class MaxDistancesAnalyzer(Analyzer):
     def __init__(self) -> None:
         self.locations = defaultdict(list)
+        
         self.first_seen = {}
         self.last_seen = {}
 
@@ -30,12 +31,12 @@ class MaxDistancesAnalyzer(Analyzer):
         point = (float(lat), float(lon))
         self.locations[mac].append(point)
 
-        # Assumes that input entries are sequential
-        if mac not in self.first_seen:
+        if mac not in self.first_seen or self.first_seen[mac] > time:
             self.first_seen[mac] = time
 
-        self.last_seen[mac] = time
-
+        if mac not in self.last_seen or self.last_seen[mac] < time:
+            self.last_seen[mac] = time
+            
     @line_profiler.profile
     def write(self, output_file: str | None):
         logging.info('"Writing" table')
