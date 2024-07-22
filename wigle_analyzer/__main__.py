@@ -29,10 +29,15 @@ def main():
         description="Analyzes Wigle database exports",
     )
 
-    parser.add_argument("-i", "--input_file", required=True)
+    parser.add_argument("-i", "--input_file", required=True, nargs="+")
     parser.add_argument("-o", "--output_file")
 
-    parser.add_argument("-f", "--input_format", choices=PARSERS.keys())
+    parser.add_argument(
+        "-f",
+        "--input_format",
+        choices=PARSERS.keys(),
+        help="Parser to use for all input files. Shouldn't be used when using multiple different format input.",
+    )
     parser.add_argument("-a", "--analyzer", choices=ANALYZERS.keys(), required=True)
 
     parser.add_argument("-b", "--keep-bad-entries", action="store_false")
@@ -64,8 +69,11 @@ def run(args):
     entry_filter = EntryFilter(callback=callback, filter_bad=args.keep_bad_entries)
     callback = entry_filter.callback_filter
 
-    # Run the reader and analyzer
-    get_reader(args)(args.input_file, callback, filter_mac=args.mac)
+    # Run analysis
+    for input_file in args.input_file:
+        logging.info("Running parser for %s", input_file)
+        reader = get_reader(input_file, args.input_format)
+        reader(input_file, callback, filter_mac=args.mac)
 
     # Write results
     analyzer.write(args.output_file)
@@ -75,13 +83,12 @@ def get_analyzer(args) -> Analyzer:
     return ANALYZERS[args.analyzer]
 
 
-def get_reader(args) -> Parser:
-    input_format = args.input_format
+def get_reader(input_file: str, input_format: str | None) -> Parser:
     if input_format is None:
         # Try determining type from file name
-        if args.input_file.endswith(".csv"):
+        if input_file.endswith(".csv"):
             input_format = "csv"
-        elif args.input_file.endswith(".sqlite"):
+        elif input_file.endswith(".sqlite"):
             input_format = "sqlite"
         else:
             raise BadInputFormat("Could not determine input format from file name.")
