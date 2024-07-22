@@ -29,7 +29,7 @@ def main():
         description="Analyzes Wigle database exports",
     )
 
-    parser.add_argument("-i", "--input_file", required=True, nargs="+")
+    parser.add_argument("-i", "--input_file", required=True, action="append")
     parser.add_argument("-o", "--output_file")
 
     parser.add_argument(
