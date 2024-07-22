@@ -34,11 +34,11 @@ class EntryFilter(Analyzer):
         time: datetime,
     ):
         """Callback for each entry"""
-        if self.filter_bad:
-            if isinstance(lat, str):
-                if "∞" in lat:
-                    return
+        if isinstance(lat, str):
+            if "∞" in lat:
+                return
 
+        if self.filter_bad:
             if time < self.min_date:
                 return
 
