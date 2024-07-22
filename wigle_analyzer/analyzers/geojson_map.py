@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 import geojson
 import line_profiler
@@ -18,9 +19,14 @@ class GeoJsonMap(Analyzer):
         lon: str,
         altitude: str,
         accuracy: str,
-        time: str,
+        time: datetime,
     ):
-        tags = {"mac": mac, "altitude": altitude, "accuracy": accuracy, "time": time}
+        tags = {
+            "mac": mac,
+            "altitude": altitude,
+            "accuracy": accuracy,
+            "time": time.isoformat(),
+        }
 
         point = geojson.Point((float(lon), float(lat)))
         node = geojson.Feature(geometry=point, properties=tags)

@@ -1,8 +1,7 @@
 """A Wigle database export parser"""
 
-import csv
-import logging
 import sqlite3
+from datetime import datetime
 from typing import Type
 
 import line_profiler
@@ -36,10 +35,11 @@ class DBParser(Parser):
 
         for row in locations:
             mac = row[0]
-            time = row[1]
             lat = row[2]
             lon = row[3]
             altitude = row[4]
             accuracy = row[5]
+
+            time = datetime.fromtimestamp(row[1] / 1000)
 
             callback(mac, lat, lon, altitude, accuracy, time)

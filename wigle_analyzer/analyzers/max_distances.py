@@ -1,5 +1,6 @@
 import logging
 from collections import defaultdict
+from datetime import datetime
 from operator import itemgetter
 
 import line_profiler
@@ -24,7 +25,7 @@ class MaxDistancesAnalyzer(Analyzer):
         lon: str,
         _altitude: str,
         _accuracy: str,
-        time: str,
+        time: datetime,
     ):
         point = (float(lat), float(lon))
         self.locations[mac].append(point)

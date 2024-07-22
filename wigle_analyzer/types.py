@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Type
 
 
@@ -12,7 +13,7 @@ class Analyzer:
         _lon: str,
         _altitude: str,
         _accuracy: str,
-        _time: str,
+        _time: datetime,
     ):
         pass
 

@@ -2,6 +2,7 @@
 
 import csv
 import logging
+from datetime import datetime
 from typing import Type
 
 import line_profiler
@@ -36,10 +37,11 @@ class CSVParser(Parser):
                     logging.debug("Row filtered out by MAC")
                     continue
 
-                time = row[3]
                 lat = row[7]
                 lon = row[8]
                 altitude = row[9]
                 accuracy = row[10]
+
+                time = datetime.fromisoformat(row[3])
 
                 callback(mac, lat, lon, altitude, accuracy, time)
