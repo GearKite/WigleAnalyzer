@@ -1,5 +1,5 @@
-from collections import defaultdict
 import logging
+from collections import defaultdict
 from operator import itemgetter
 
 import line_profiler
@@ -13,6 +13,8 @@ from wigle_analyzer.types import Analyzer
 class MaxDistancesAnalyzer(Analyzer):
     def __init__(self) -> None:
         self.locations = defaultdict(list)
+        self.first_seen = {}
+        self.last_seen = {}
 
     @line_profiler.profile
     def callback_for_each(
@@ -22,10 +24,16 @@ class MaxDistancesAnalyzer(Analyzer):
         lon: str,
         _altitude: str,
         _accuracy: str,
-        _time: str,
+        time: str,
     ):
         point = (float(lat), float(lon))
         self.locations[mac].append(point)
+
+        # Assumes that input entries are sequential
+        if mac not in self.first_seen:
+            self.first_seen[mac] = time
+
+        self.last_seen[mac] = time
 
     @line_profiler.profile
     def write(self, output_file: str | None):
@@ -44,18 +52,21 @@ class MaxDistancesAnalyzer(Analyzer):
 
         sorted_distances = sorted(distances.items(), key=itemgetter(1))
 
-        table = PrettyTable(["MAC", "Num. Points", "Max distance"])
-
-        table.add_rows(
-            [
-                [
-                    mac,
-                    len(self.locations[mac]),
-                    distance,
-                ]
-                for mac, distance in sorted_distances
-            ]
+        table = PrettyTable(
+            ["MAC", "Num. Points", "Max distance", "First Seen", "Last Seen"]
         )
+
+        rows = [
+            [
+                mac,
+                len(self.locations[mac]),
+                distance,
+                self.first_seen[mac],
+                self.last_seen[mac],
+            ]
+            for mac, distance in sorted_distances
+        ]
+        table.add_rows(rows)
 
         if output_file is not None:
             if output_file.endswith(".html"):
