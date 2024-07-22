@@ -57,4 +57,19 @@ class MaxDistancesAnalyzer(Analyzer):
             ]
         )
 
-        print(table)
+        if output_file is not None:
+            if output_file.endswith(".html"):
+                string = table.get_html_string()
+            elif output_file.endswith(".json"):
+                string = table.get_json_string()
+            elif output_file.endswith(".csv"):
+                string = table.get_csv_string()
+            elif output_file.endswith(".tex"):
+                string = table.get_latex_string()
+            else:
+                string = table.get_string()
+
+            with open(output_file, "w+", encoding="utf-8") as f:
+                f.write(string)
+        else:
+            print(table)
