@@ -19,6 +19,8 @@ class CSVParser(Parser):
         callback: Type[Analyzer.callback_for_each],
         filter_mac: str | None,
     ):
+        self.filter = filter_mac is not None
+
         with open(file_name, "r", encoding="utf-8") as f:
             reader = csv.reader(f)
 
@@ -30,7 +32,7 @@ class CSVParser(Parser):
             for row in reader:
                 mac = row[0]
 
-                if filter_mac is not None and mac != filter_mac:
+                if self.filter and mac != filter_mac:
                     logging.debug("Row filtered out by MAC")
                     continue
 

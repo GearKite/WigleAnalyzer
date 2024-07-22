@@ -1,3 +1,4 @@
+from collections import defaultdict
 import logging
 from operator import itemgetter
 
@@ -11,7 +12,7 @@ from wigle_analyzer.types import Analyzer
 
 class MaxDistancesAnalyzer(Analyzer):
     def __init__(self) -> None:
-        self.locations = {}
+        self.locations = defaultdict(list)
 
     @line_profiler.profile
     def callback_for_each(
@@ -23,14 +24,11 @@ class MaxDistancesAnalyzer(Analyzer):
         _accuracy: str,
         _time: str,
     ):
-        if mac not in self.locations:
-            self.locations[mac] = []
-
         point = (float(lat), float(lon))
         self.locations[mac].append(point)
 
     @line_profiler.profile
-    def write(self, _output_file: str):
+    def write(self, output_file: str | None):
         logging.info('"Writing" table')
         distances = {}
 

@@ -32,25 +32,20 @@ class EntryFilter(Analyzer):
     ):
         """Callback for each entry"""
         if self.filter_bad:
-            if lat == "∞" or lat == "-∞":
-                logging.debug("filtering, lat is %s", lat)
+            if "∞" in lat:
                 return
 
             if lon == "∞" or lon == "-∞":
-                logging.debug("filtering, lon is %s", lon)
                 return
 
             if isinstance(time, str):
                 if time.startswith("1970"):
-                    logging.debug("filtering, time is %s", time)
                     return
 
                 if time.startswith("00"):
-                    logging.debug("filtering, time is %s", time)
                     return
             else:
                 if time < 10000000:
-                    logging.debug("filtering, time is %s", time)
                     return
 
         self.callback(mac, lat, lon, altitude, accuracy, time)
