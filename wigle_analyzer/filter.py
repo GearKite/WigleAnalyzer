@@ -32,11 +32,9 @@ class EntryFilter(Analyzer):
     ):
         """Callback for each entry"""
         if self.filter_bad:
-            if "∞" in lat:
-                return
-
-            if lon == "∞" or lon == "-∞":
-                return
+            if isinstance(lat, str):
+                if "∞" in lat:
+                    return
 
             if isinstance(time, str):
                 if time.startswith("1970"):
