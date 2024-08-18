@@ -17,12 +17,19 @@ class CSVParser(Parser):
     def __init__(
         self,
         file_name: str,
-        callback: Type[Analyzer.callback_for_each],
-        filter_mac: str | None,
     ):
-        self.filter = filter_mac is not None
+        self.filter_mac = None
+        self.last_seen_time = None
+        self.file_name = file_name
+        self.filter = False
 
-        with open(file_name, "r", encoding="utf-8") as f:
+    @line_profiler.profile
+    def select_locations(
+        self,
+        callback: Type[Analyzer.callback_for_each],
+        network_bssids: set[str] | None,
+    ):
+        with open(self.file_name, "r", encoding="utf-8") as f:
             reader = csv.reader(f)
 
             # Skip Wigle info
@@ -30,13 +37,14 @@ class CSVParser(Parser):
             # Skip keys
             next(reader)
 
-            for row in reader:
+            # Create a generator if given network bssids
+            if network_bssids is not None:
+                rows = (row for row in reader if row[0] in network_bssids)
+            else:
+                rows = reader
+
+            for row in rows:
                 mac = row[0]
-
-                if self.filter and mac != filter_mac:
-                    logging.debug("Row filtered out by MAC")
-                    continue
-
                 lat = row[7]
                 lon = row[8]
                 altitude = row[9]
@@ -45,3 +53,15 @@ class CSVParser(Parser):
                 time = datetime.fromisoformat(row[3])
 
                 callback(mac, lat, lon, altitude, accuracy, time)
+
+    @line_profiler.profile
+    def select_networks(
+        self,
+        filter_mac: str | None,
+        last_seen_time: datetime,
+    ) -> set[str] | None:
+        if filter_mac is not None:
+            return [filter_mac]
+
+        # TODO: implement
+        return None

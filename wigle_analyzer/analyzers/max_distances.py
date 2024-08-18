@@ -14,7 +14,7 @@ from wigle_analyzer.types import Analyzer
 class MaxDistancesAnalyzer(Analyzer):
     def __init__(self) -> None:
         self.locations = defaultdict(list)
-        
+
         self.first_seen = {}
         self.last_seen = {}
 
@@ -36,7 +36,7 @@ class MaxDistancesAnalyzer(Analyzer):
 
         if mac not in self.last_seen or self.last_seen[mac] < time:
             self.last_seen[mac] = time
-            
+
     @line_profiler.profile
     def write(self, output_file: str | None):
         logging.info('"Writing" table')
@@ -67,6 +67,7 @@ class MaxDistancesAnalyzer(Analyzer):
                 self.last_seen[mac],
             ]
             for mac, distance in sorted_distances
+            if distance > 0.01
         ]
         table.add_rows(rows)
 

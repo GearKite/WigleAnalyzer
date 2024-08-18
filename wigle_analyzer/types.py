@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Type
+from typing import Type, Union
 
 
 class Analyzer:
@@ -25,8 +25,20 @@ class Parser:
     def __init__(
         self,
         file_name: str,
-        callback: Type[Analyzer.callback_for_each],
+    ):
+        pass
+
+    def select_networks(
+        self,
         filter_mac: str | None,
+        last_seen_time: datetime,
+    ) -> set[str] | None:
+        pass
+
+    def select_locations(
+        self,
+        callback: Type[Analyzer.callback_for_each],
+        network_bssids: set[str] | None,
     ):
         pass
 
