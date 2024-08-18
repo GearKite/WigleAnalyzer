@@ -1,6 +1,7 @@
-from datetime import datetime, timedelta
-from dateutil import parser
 import re
+from datetime import datetime, timedelta
+
+from dateutil import parser
 
 
 def parse_datetime(input_str: str | None) -> datetime:
