@@ -32,8 +32,25 @@ class CSVParser(Parser):
         with open(self.file_name, "r", encoding="utf-8") as f:
             reader = csv.reader(f)
 
-            # Skip Wigle info
-            next(reader)
+            header_row = next(reader)
+            match header_row[0]:
+                case "WigleWifi-1.4":
+                    ROW_MAC_NUM = 0
+                    ROW_LAT_NUM = 6
+                    ROW_LON_NUM = 7
+                    ROW_ALTITUDE_NUM = 8
+                    ROW_ACCURACY_NUM = 9
+                case "WigleWifi-1.6":
+                    ROW_MAC_NUM = 0
+                    ROW_LAT_NUM = 7
+                    ROW_LON_NUM = 8
+                    ROW_ALTITUDE_NUM = 9
+                    ROW_ACCURACY_NUM = 10
+                case _:
+                    raise (
+                        NotImplementedError("This WigleWifi version is not supported!")
+                    )
+
             # Skip keys
             next(reader)
 
@@ -44,11 +61,11 @@ class CSVParser(Parser):
                 rows = reader
 
             for row in rows:
-                mac = row[0]
-                lat = row[7]
-                lon = row[8]
-                altitude = row[9]
-                accuracy = row[10]
+                mac = row[ROW_MAC_NUM]
+                lat = row[ROW_LAT_NUM]
+                lon = row[ROW_LON_NUM]
+                altitude = row[ROW_ALTITUDE_NUM]
+                accuracy = row[ROW_ACCURACY_NUM]
 
                 time = datetime.fromisoformat(row[3])
 
